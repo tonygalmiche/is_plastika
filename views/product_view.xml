@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Modification de la vue is_category form pour ajouter le champ is_societe_comptable -->
+        <record model="ir.ui.view" id="is_plastika_category_form_view">
+            <field name="name">is_plastika_category_form_view</field>
+            <field name="model">is.category</field>
+            <field name="inherit_id" ref="is_plastigray16.is_category_form_view"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='limiter_designation_35']" position="after">
+                    <field name="is_societe_comptable"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Modification de la vue is_category tree pour afficher le champ is_societe_comptable -->
+        <record model="ir.ui.view" id="is_plastika_category_tree_view">
+            <field name="name">is_plastika_category_tree_view</field>
+            <field name="model">is.category</field>
+            <field name="inherit_id" ref="is_plastigray16.is_category_tree_view"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='limiter_designation_35']" position="after">
+                    <field name="is_societe_comptable"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Modification de la vue is_category search pour filtrer par société comptable -->
+        <record model="ir.ui.view" id="is_plastika_category_filter_view">
+            <field name="name">is_plastika_category_filter_view</field>
+            <field name="model">is.category</field>
+            <field name="inherit_id" ref="is_plastigray16.is_category_filter_view"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='fantome']" position="after">
+                    <field name="is_societe_comptable"/>
+                    <filter string="Plastigray" name="filter_plastigray" domain="[('is_societe_comptable', '=', 'plastigray')]"/>
+                    <filter string="Plasti-ka" name="filter_plastika" domain="[('is_societe_comptable', '=', 'plasti_ka')]"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Modification de la vue product template form pour ajouter le champ is_societe_comptable -->
+        <record model="ir.ui.view" id="is_plastika_product_template_form_view">
+            <field name="name">is_plastika_product_template_form_view</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="is_plastigray16.product_template_form_view"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='is_category_id']" position="after">
+                    <field name="is_societe_comptable"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Modification de la vue product template tree pour afficher le champ is_societe_comptable -->
+        <record model="ir.ui.view" id="is_plastika_product_tree_view">
+            <field name="name">is_plastika_product_tree_view</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="is_plastigray16.is_product_tree_view"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='is_category_id']" position="after">
+                    <field name="is_societe_comptable" optional="hide"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Modification de la vue product template search pour filtrer par société comptable -->
+        <record model="ir.ui.view" id="is_plastika_product_search_view">
+            <field name="name">is_plastika_product_search_view</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="is_plastigray16.is_product_search_view"/>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='is_category_id']" position="after">
+                    <field name="is_societe_comptable"/>
+                    <filter string="Plastigray" name="filter_plastigray_prod" domain="[('is_societe_comptable', '=', 'plastigray')]"/>
+                    <filter string="Plasti-ka" name="filter_plastika_prod" domain="[('is_societe_comptable', '=', 'plasti_ka')]"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

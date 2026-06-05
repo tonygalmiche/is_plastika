@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    
+    <!-- Menu Taux de change dans Facturation PK -->
+    <record id="menu_is_taux_change" model="ir.ui.menu" >
+        <field name="name">Taux de change</field>
+        <field name="sequence">100</field>
+        <field name="parent_id" ref="is_plastigray16.menu_main_facturation_pk"/>
+        <field name="action" ref="is_taux_change_action"/>
+    </record>
+
+    </data>
+</odoo>

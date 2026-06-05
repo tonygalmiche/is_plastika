@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Form view -->
+        <record id="is_taux_change_form_view" model="ir.ui.view">
+            <field name="name">is.taux.change.form</field>
+            <field name="model">is.taux.change</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group string="Taux de change">
+                                <field name="date"/>
+                                <field name="devise1_id" readonly="1"/>
+                                <field name="devise2_id"/>
+                                <field name="taux"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree view -->
+        <record id="is_taux_change_tree_view" model="ir.ui.view">
+            <field name="name">is.taux.change.tree</field>
+            <field name="model">is.taux.change</field>
+            <field name="arch" type="xml">
+                <tree create="false">
+                    <field name="date"/>
+                    <field name="devise1_id" readonly="1"/>
+                    <field name="devise2_id"/>
+                    <field name="taux"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Search view -->
+        <record id="is_taux_change_search_view" model="ir.ui.view">
+            <field name="name">is.taux.change.search</field>
+            <field name="model">is.taux.change</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="date"/>
+                    <field name="devise2_id"/>
+                    <separator/>
+                    <filter name="filter_today" string="Aujourd'hui" domain="[('date', '=', context_today())]"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action window -->
+        <record id="is_taux_change_action" model="ir.actions.act_window">
+            <field name="name">Taux de change</field>
+            <field name="res_model">is.taux.change</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_filter_this_month': 1}</field>
+        </record>
+
+        <!-- Cron job pour récupérer le taux de change automatiquement chaque jour -->
+        <record id="cron_recuperer_taux_change" model="ir.cron">
+            <field name="name">Récupérer taux de change EUR/TND</field>
+            <field name="model_id" ref="model_is_taux_change"/>
+            <field name="state">code</field>
+            <field name="code">model.recuperer_taux_change_jour()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">0</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="True"/>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+    </data>
+</odoo>

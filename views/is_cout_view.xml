@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Ajout du champ is_societe_comptable dans la form view principale de is.cout -->
+        <record id="is_plastika_cout_form_view" model="ir.ui.view">
+            <field name="name">is.cout.form</field>
+            <field name="model">is.cout</field>
+            <field name="inherit_id" ref="is_plastigray16.is_cout_form_view"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable" readonly="1"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Ajout du champ is_societe_comptable dans la form view Plasti-ka de is.cout -->
+        <record id="is_plastika_cout_pk_form_view" model="ir.ui.view">
+            <field name="name">is.cout.pk.form</field>
+            <field name="model">is.cout</field>
+            <field name="inherit_id" ref="is_plastigray16.is_cout_pk_form_view"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable" readonly="1"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Ajout du champ is_societe_comptable dans la tree view de is.cout -->
+        <record id="is_plastika_cout_tree_view" model="ir.ui.view">
+            <field name="name">is.cout.tree</field>
+            <field name="model">is.cout</field>
+            <field name="inherit_id" ref="is_plastigray16.is_cout_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Ajout du champ is_societe_comptable dans la search view de is.cout -->
+        <record id="is_plastika_cout_search_view" model="ir.ui.view">
+            <field name="name">is.cout.search</field>
+            <field name="model">is.cout</field>
+            <field name="inherit_id" ref="is_plastigray16.is_cout_search_view"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable"/>
+                    <separator/>
+                    <filter name="filter_plastigray" string="Plastigray" domain="[('is_societe_comptable', '=', 'plastigray')]"/>
+                    <filter name="filter_plasti_ka" string="Plasti-ka" domain="[('is_societe_comptable', '=', 'plasti_ka')]"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Ajout du champ is_societe_comptable dans la export tree view de is.cout -->
+        <record id="is_plastika_cout_export_tree_view" model="ir.ui.view">
+            <field name="name">is.cout.export.tree</field>
+            <field name="model">is.cout</field>
+            <field name="inherit_id" ref="is_plastigray16.is_cout_export_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>

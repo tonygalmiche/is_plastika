@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- is_demande_achat_fg views -->
+        <record model="ir.ui.view" id="is_plastika_demande_achat_fg_form_view">
+            <field name="name">is_plastika_demande_achat_fg_form_view</field>
+            <field name="model">is.demande.achat.fg</field>
+            <field name="inherit_id" ref="is_plastigray16.is_demande_achat_fg_form_view"/>
+            <field name="arch" type="xml">
+                <field name="fournisseur_id" position="after">
+                    <field name="is_societe_comptable" readonly="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="is_plastika_demande_achat_fg_tree_view">
+            <field name="name">is_plastika_demande_achat_fg_tree_view</field>
+            <field name="model">is.demande.achat.fg</field>
+            <field name="inherit_id" ref="is_plastigray16.is_demande_achat_fg_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="fournisseur_id" position="after">
+                    <field name="is_societe_comptable" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="is_plastika_demande_achat_fg_search_view">
+            <field name="name">is_plastika_demande_achat_fg_search_view</field>
+            <field name="model">is.demande.achat.fg</field>
+            <field name="inherit_id" ref="is_plastigray16.is_demande_achat_fg_search_view"/>
+            <field name="arch" type="xml">
+                <field name="fournisseur_id" position="after">
+                    <field name="is_societe_comptable"/>
+                    <filter string="Plastigray" name="filter_plastigray_dag_fg" domain="[('is_societe_comptable', '=', 'plastigray')]"/>
+                    <filter string="Plasti-ka" name="filter_plastika_dag_fg" domain="[('is_societe_comptable', '=', 'plasti_ka')]"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- is_demande_achat_invest views -->
+        <record model="ir.ui.view" id="is_plastika_demande_achat_invest_form_view">
+            <field name="name">is_plastika_demande_achat_invest_form_view</field>
+            <field name="model">is.demande.achat.invest</field>
+            <field name="inherit_id" ref="is_plastigray16.is_demande_achat_invest_form_view"/>
+            <field name="arch" type="xml">
+                <field name="fournisseur_id" position="after">
+                    <field name="is_societe_comptable" readonly="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="is_plastika_demande_achat_invest_tree_view">
+            <field name="name">is_plastika_demande_achat_invest_tree_view</field>
+            <field name="model">is.demande.achat.invest</field>
+            <field name="inherit_id" ref="is_plastigray16.is_demande_achat_invest_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="fournisseur_id" position="after">
+                    <field name="is_societe_comptable" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="is_plastika_demande_achat_invest_search_view">
+            <field name="name">is_plastika_demande_achat_invest_search_view</field>
+            <field name="model">is.demande.achat.invest</field>
+            <field name="inherit_id" ref="is_plastigray16.is_demande_achat_invest_search_view"/>
+            <field name="arch" type="xml">
+                <field name="fournisseur_id" position="after">
+                    <field name="is_societe_comptable"/>
+                    <filter string="Plastigray" name="filter_plastigray_dag_invest" domain="[('is_societe_comptable', '=', 'plastigray')]"/>
+                    <filter string="Plasti-ka" name="filter_plastika_dag_invest" domain="[('is_societe_comptable', '=', 'plasti_ka')]"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- is_demande_achat_moule views -->
+        <record model="ir.ui.view" id="is_plastika_demande_achat_moule_form_view">
+            <field name="name">is_plastika_demande_achat_moule_form_view</field>
+            <field name="model">is.demande.achat.moule</field>
+            <field name="inherit_id" ref="is_plastigray16.is_demande_achat_moule_form_view"/>
+            <field name="arch" type="xml">
+                <field name="fournisseur_id" position="after">
+                    <field name="is_societe_comptable" readonly="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="is_plastika_demande_achat_moule_tree_view">
+            <field name="name">is_plastika_demande_achat_moule_tree_view</field>
+            <field name="model">is.demande.achat.moule</field>
+            <field name="inherit_id" ref="is_plastigray16.is_demande_achat_moule_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="fournisseur_id" position="after">
+                    <field name="is_societe_comptable" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="is_plastika_demande_achat_moule_search_view">
+            <field name="name">is_plastika_demande_achat_moule_search_view</field>
+            <field name="model">is.demande.achat.moule</field>
+            <field name="inherit_id" ref="is_plastigray16.is_demande_achat_moule_search_view"/>
+            <field name="arch" type="xml">
+                <field name="fournisseur_id" position="after">
+                    <field name="is_societe_comptable"/>
+                    <filter string="Plastigray" name="filter_plastigray_dag_moule" domain="[('is_societe_comptable', '=', 'plastigray')]"/>
+                    <filter string="Plasti-ka" name="filter_plastika_dag_moule" domain="[('is_societe_comptable', '=', 'plasti_ka')]"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- is_demande_achat_serie views -->
+        <record model="ir.ui.view" id="is_plastika_demande_achat_serie_form_view">
+            <field name="name">is_plastika_demande_achat_serie_form_view</field>
+            <field name="model">is.demande.achat.serie</field>
+            <field name="inherit_id" ref="is_plastigray16.is_demande_achat_serie_form_view"/>
+            <field name="arch" type="xml">
+                <field name="fournisseur_id" position="after">
+                    <field name="is_societe_comptable" readonly="1"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="is_plastika_demande_achat_serie_tree_view">
+            <field name="name">is_plastika_demande_achat_serie_tree_view</field>
+            <field name="model">is.demande.achat.serie</field>
+            <field name="inherit_id" ref="is_plastigray16.is_demande_achat_serie_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="fournisseur_id" position="after">
+                    <field name="is_societe_comptable" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="is_plastika_demande_achat_serie_search_view">
+            <field name="name">is_plastika_demande_achat_serie_search_view</field>
+            <field name="model">is.demande.achat.serie</field>
+            <field name="inherit_id" ref="is_plastigray16.is_demande_achat_serie_search_view"/>
+            <field name="arch" type="xml">
+                <field name="fournisseur_id" position="after">
+                    <field name="is_societe_comptable"/>
+                    <filter string="Plastigray" name="filter_plastigray_dag_serie" domain="[('is_societe_comptable', '=', 'plastigray')]"/>
+                    <filter string="Plasti-ka" name="filter_plastika_dag_serie" domain="[('is_societe_comptable', '=', 'plasti_ka')]"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

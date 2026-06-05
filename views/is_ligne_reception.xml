@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Ajout du champ is_societe_comptable dans la vue tree "à traiter" de is_ligne_reception -->
+        <record id="is_plastika_ligne_reception_a_traiter_tree_view" model="ir.ui.view">
+            <field name="name">is.ligne.reception.tree.a.traiter</field>
+            <field name="model">is.ligne.reception</field>
+            <field name="inherit_id" ref="is_plastigray16.is_ligne_reception_a_traiter_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Ajout du champ is_societe_comptable dans la vue tree principale de is_ligne_reception -->
+        <record id="is_plastika_ligne_reception_tree_view" model="ir.ui.view">
+            <field name="name">is.ligne.reception.tree</field>
+            <field name="model">is.ligne.reception</field>
+            <field name="inherit_id" ref="is_plastigray16.is_ligne_reception_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Ajout du champ is_societe_comptable dans la search view de is_ligne_reception -->
+        <record id="is_plastika_ligne_reception_search_view" model="ir.ui.view">
+            <field name="name">is.ligne.reception.search</field>
+            <field name="model">is.ligne.reception</field>
+            <field name="inherit_id" ref="is_plastigray16.is_ligne_reception_search_view"/>
+            <field name="arch" type="xml">
+                <field name="is_demandeur_id" position="after">
+                    <field name="is_societe_comptable"/>
+                    <separator/>
+                    <filter name="filter_plastigray" string="Plastigray" domain="[('is_societe_comptable', '=', 'plastigray')]"/>
+                    <filter name="filter_plasti_ka" string="Plasti-ka" domain="[('is_societe_comptable', '=', 'plasti_ka')]"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>

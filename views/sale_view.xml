@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Modification de la vue sale.order form pour ajouter le champ is_societe_comptable -->
+        <record model="ir.ui.view" id="is_plastika_sale_order_form_view">
+            <field name="name">is_plastika_sale_order_form_view</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable" readonly="1"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Modification de la vue sale.order tree pour afficher le champ is_societe_comptable -->
+        <record model="ir.ui.view" id="is_plastika_sale_order_tree_view">
+            <field name="name">is_plastika_sale_order_tree_view</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Modification de la vue sale.order search pour ajouter des filtres -->
+        <record model="ir.ui.view" id="is_plastika_sale_order_search_view">
+            <field name="name">is_plastika_sale_order_search_view</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="is_societe_comptable"/>
+                    <filter string="Plastigray" name="filter_plastigray_so" domain="[('is_societe_comptable', '=', 'plastigray')]"/>
+                    <filter string="Plasti-ka" name="filter_plastika_so" domain="[('is_societe_comptable', '=', 'plasti_ka')]"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

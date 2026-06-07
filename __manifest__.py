@@ -15,13 +15,13 @@ Module Odoo 16 pour Plasti-ka
     ],
     "data" : [
         "security/ir.model.access.csv",
-        "views/menu.xml",
         "views/product_view.xml",
         "views/sale_view.xml",
         "views/is_demande_achat_view.xml",
         "views/is_ligne_reception.xml",
         "views/is_cout_view.xml",
         "views/is_taux_change_view.xml",
+        "views/menu.xml",
     ], 
     "qweb": [
     ],

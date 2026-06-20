@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="is_fiche_tampographie_view_tree_inherit" model="ir.ui.view">
+            <field name="name">is_fiche_tampographie_view_tree_inherit</field>
+            <field name="model">is.fiche.tampographie</field>
+            <field name="inherit_id" ref="is_plastigray16.is_fiche_tampographie_view_tree"/>
+            <field name="arch" type="xml">
+                <field name="article_injection_id" position="after">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+        <record id="is_fiche_tampographie_view_form_inherit" model="ir.ui.view">
+            <field name="name">is_fiche_tampographie_view_form_inherit</field>
+            <field name="model">is.fiche.tampographie</field>
+            <field name="inherit_id" ref="is_plastigray16.is_fiche_tampographie_view_form"/>
+            <field name="arch" type="xml">
+                <field name="article_injection_id" position="after">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+        <record id="is_fiche_tampographie_search_view_inherit" model="ir.ui.view">
+            <field name="name">is_fiche_tampographie_search_view_inherit</field>
+            <field name="model">is.fiche.tampographie</field>
+            <field name="inherit_id" ref="is_plastigray16.is_fiche_tampographie_search_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

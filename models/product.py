@@ -37,3 +37,15 @@ class product_template(models.Model):
             args.append(('is_societe_comptable', '=', user.is_societe_comptable))
         
         return super(product_template, self)._search(args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
+
+
+class is_product_packaging(models.Model):
+    _inherit = 'is.product.packaging'
+
+    @api.model
+    def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
+        user = self.env.user
+        if user.is_societe_comptable:
+            args = args.copy()
+            args.append(('product_tmpl_id.is_societe_comptable', '=', user.is_societe_comptable))
+        return super(is_product_packaging, self)._search(args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)

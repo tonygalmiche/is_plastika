@@ -10,3 +10,5 @@ from . import is_fiche_tampographie
 from . import is_certifications_qualite_suivi
 from . import product_pricelist
 from . import is_pricelist_item
+from . import is_cde_ouverte_fournisseur
+from . import account_move

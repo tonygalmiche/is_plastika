@@ -26,6 +26,10 @@ Module Odoo 16 pour Plasti-ka
         "views/is_certifications_qualite_suivi_view.xml",
         "views/product_pricelist_view.xml",
         "views/is_pricelist_item_view.xml",
+        "views/is_cde_ouverte_fournisseur_view.xml",
+        "views/is_cde_ferme_cadencee_view.xml",
+        "views/is_export_edi_view.xml",
+        "views/account_move_view.xml",
         "views/menu.xml",
     ], 
     "qweb": [

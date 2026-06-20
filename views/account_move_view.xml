@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_in_invoice_bill_tree_inherit" model="ir.ui.view">
+            <field name="name">view_in_invoice_bill_tree_inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_in_invoice_bill_tree"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+        <record id="view_move_form_inherit" model="ir.ui.view">
+            <field name="name">view_move_form_inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+        <record id="view_account_invoice_filter_inherit" model="ir.ui.view">
+            <field name="name">view_account_invoice_filter_inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

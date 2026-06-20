@@ -10,5 +10,16 @@
         <field name="action" ref="is_taux_change_action"/>
     </record>
 
+    <!-- Suppression des menus O'Work -->
+    <record id="is_plastigray16.is_import_facture_owork_menu" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="is_plastigray16.is_exporter_receptions_owork_menu" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <!-- <record id="is_plastigray16.is_export_cegid_achat_menu2" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record> -->
+
     </data>
 </odoo>

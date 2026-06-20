@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="is_cde_ouverte_fournisseur_form_view_inherit" model="ir.ui.view">
+            <field name="name">is_cde_ouverte_fournisseur_form_view_inherit</field>
+            <field name="model">is.cde.ouverte.fournisseur</field>
+            <field name="inherit_id" ref="is_plastigray16.is_cde_ouverte_fournisseur_form_view"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+        <record id="is_cde_ouverte_fournisseur_tree_view_inherit" model="ir.ui.view">
+            <field name="name">is_cde_ouverte_fournisseur_tree_view_inherit</field>
+            <field name="model">is.cde.ouverte.fournisseur</field>
+            <field name="inherit_id" ref="is_plastigray16.is_cde_ouverte_fournisseur_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+        <record id="is_cde_ouverte_fournisseur_search_view_inherit" model="ir.ui.view">
+            <field name="name">is_cde_ouverte_fournisseur_search_view_inherit</field>
+            <field name="model">is.cde.ouverte.fournisseur</field>
+            <field name="inherit_id" ref="is_plastigray16.is_cde_ouverte_fournisseur_search_view"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+        <record id="is_cde_ouverte_fournisseur_product_tree_view_inherit" model="ir.ui.view">
+            <field name="name">is_cde_ouverte_fournisseur_product_tree_view_inherit</field>
+            <field name="model">is.cde.ouverte.fournisseur.product</field>
+            <field name="inherit_id" ref="is_plastigray16.is_cde_ouverte_fournisseur_product_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="order_id" position="before">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+        <record id="is_cde_ouverte_fournisseur_product_search_view_inherit" model="ir.ui.view">
+            <field name="name">is_cde_ouverte_fournisseur_product_search_view_inherit</field>
+            <field name="model">is.cde.ouverte.fournisseur.product</field>
+            <field name="inherit_id" ref="is_plastigray16.is_cde_ouverte_fournisseur_product_search_view"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="before">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

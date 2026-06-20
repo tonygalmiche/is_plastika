@@ -30,6 +30,11 @@ Module Odoo 16 pour Plasti-ka
         "views/is_cde_ferme_cadencee_view.xml",
         "views/is_export_edi_view.xml",
         "views/account_move_view.xml",
+        "views/is_edi_cde_cli_view.xml",
+        "views/is_liste_servir_view.xml",
+        "views/is_bl_manuel_view.xml",
+        "views/stock_picking_view.xml",
+        "views/is_ligne_livraison_view.xml",
         "views/menu.xml",
     ], 
     "qweb": [

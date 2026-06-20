@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="is_ligne_livraison_tree_view_inherit" model="ir.ui.view">
+            <field name="name">is_ligne_livraison_tree_view_inherit</field>
+            <field name="model">is.ligne.livraison</field>
+            <field name="inherit_id" ref="is_plastigray16.is_ligne_livraison_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+        <record id="is_ligne_livraison_form_view_inherit" model="ir.ui.view">
+            <field name="name">is_ligne_livraison_form_view_inherit</field>
+            <field name="model">is.ligne.livraison</field>
+            <field name="inherit_id" ref="is_plastigray16.is_ligne_livraison_form_view"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+        <record id="is_ligne_livraison_search_view_inherit" model="ir.ui.view">
+            <field name="name">is_ligne_livraison_search_view_inherit</field>
+            <field name="model">is.ligne.livraison</field>
+            <field name="inherit_id" ref="is_plastigray16.is_ligne_livraison_search_view"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

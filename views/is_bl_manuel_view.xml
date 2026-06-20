@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="is_bl_manuel_tree_view_inherit" model="ir.ui.view">
+            <field name="name">is_bl_manuel_tree_view_inherit</field>
+            <field name="model">is.bl.manuel</field>
+            <field name="inherit_id" ref="is_plastigray16.is_bl_manuel_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+        <record id="is_bl_manuel_form_view_inherit" model="ir.ui.view">
+            <field name="name">is_bl_manuel_form_view_inherit</field>
+            <field name="model">is.bl.manuel</field>
+            <field name="inherit_id" ref="is_plastigray16.is_bl_manuel_form_view"/>
+            <field name="arch" type="xml">
+                <field name="destinataire_id" position="after">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+        <record id="is_bl_manuel_search_view_inherit" model="ir.ui.view">
+            <field name="name">is_bl_manuel_search_view_inherit</field>
+            <field name="model">is.bl.manuel</field>
+            <field name="inherit_id" ref="is_plastigray16.is_bl_manuel_search_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="is_societe_comptable"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

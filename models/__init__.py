@@ -12,3 +12,8 @@ from . import product_pricelist
 from . import is_pricelist_item
 from . import is_cde_ouverte_fournisseur
 from . import account_move
+from . import is_edi_cde_cli
+from . import is_liste_servir
+from . import is_bl_manuel
+from . import stock_picking
+from . import is_ligne_livraison

@@ -23,3 +23,5 @@ from . import is_mrp_production_workcenter_line
 from . import is_stock_quant
 from . import pg_stock_move
 from . import stock_move
+from . import stock_lot
+from . import is_stock_valorise

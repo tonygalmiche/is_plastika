@@ -65,7 +65,6 @@
             <field name="code">model.recuperer_taux_change_jour()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
-            <field name="numbercall">0</field>
             <field name="doall" eval="False"/>
             <field name="active" eval="True"/>
             <field name="user_id" ref="base.user_root"/>

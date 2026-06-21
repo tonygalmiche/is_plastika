@@ -41,6 +41,8 @@ Module Odoo 16 pour Plasti-ka
         "views/is_stock_quant_view.xml",
         "views/pg_stock_move_view.xml",
         "views/stock_move_view.xml",
+        "views/stock_lot_view.xml",
+        "views/is_stock_valorise_view.xml",
         "views/menu.xml",
     ], 
     "qweb": [

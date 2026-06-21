@@ -17,3 +17,9 @@ from . import is_liste_servir
 from . import is_bl_manuel
 from . import stock_picking
 from . import is_ligne_livraison
+from . import mrp_production
+from . import is_mrp_production_bom
+from . import is_mrp_production_workcenter_line
+from . import is_stock_quant
+from . import pg_stock_move
+from . import stock_move

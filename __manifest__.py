@@ -35,6 +35,12 @@ Module Odoo 16 pour Plasti-ka
         "views/is_bl_manuel_view.xml",
         "views/stock_picking_view.xml",
         "views/is_ligne_livraison_view.xml",
+        "views/mrp_production_view.xml",
+        "views/is_mrp_production_bom_view.xml",
+        "views/is_mrp_production_workcenter_line_view.xml",
+        "views/is_stock_quant_view.xml",
+        "views/pg_stock_move_view.xml",
+        "views/stock_move_view.xml",
         "views/menu.xml",
     ], 
     "qweb": [

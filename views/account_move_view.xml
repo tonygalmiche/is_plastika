@@ -11,6 +11,18 @@
                 </field>
             </field>
         </record>
+        <record id="view_out_invoice_tree_inherit" model="ir.ui.view">
+            <field name="name">view_out_invoice_tree_inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_out_invoice_tree"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_societe_comptable"/>
+                    <field name="is_devise_tunisienne_id" optional="show"/>
+                    <field name="is_taux_change_tnd" optional="show"/>
+                </field>
+            </field>
+        </record>
         <record id="view_move_form_inherit" model="ir.ui.view">
             <field name="name">view_move_form_inherit</field>
             <field name="model">account.move</field>
@@ -19,6 +31,17 @@
                 <field name="partner_id" position="after">
                     <field name="is_societe_comptable"/>
                 </field>
+                <xpath expr="//field[@name='invoice_line_ids']//field[@name='price_unit']" position="after">
+                    <field name="is_pu_mp"  optional="show" readonly="1" force_save="1"/>
+                    <field name="is_pu_amt" optional="show" readonly="1" force_save="1"/>
+                    <field name="is_pu_pf"  optional="show" readonly="1" force_save="1"/>
+                </xpath>
+                <page name="other_info" position="inside">
+                    <group string="Plasti-ka">
+                        <field name="is_devise_tunisienne_id"/>
+                        <field name="is_taux_change_tnd"/>
+                    </group>
+                </page>
             </field>
         </record>
         <record id="view_account_invoice_filter_inherit" model="ir.ui.view">

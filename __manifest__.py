@@ -29,6 +29,7 @@ Module Odoo 16 pour Plasti-ka
         "views/is_cde_ouverte_fournisseur_view.xml",
         "views/is_cde_ferme_cadencee_view.xml",
         "views/is_export_edi_view.xml",
+        "views/report_invoice.xml",
         "views/account_move_view.xml",
         "views/is_edi_cde_cli_view.xml",
         "views/is_liste_servir_view.xml",

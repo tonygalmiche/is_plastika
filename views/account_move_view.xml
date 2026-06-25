@@ -20,6 +20,9 @@
                     <field name="is_societe_comptable"/>
                     <field name="is_devise_tunisienne_id" optional="show"/>
                     <field name="is_taux_change_tnd" optional="show"/>
+                    <field name="is_total_mp" optional="show"/>
+                    <field name="is_total_amt" optional="show"/>
+                    <field name="is_total_service" optional="show"/>
                 </field>
             </field>
         </record>
@@ -28,6 +31,11 @@
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                    <button name="action_view_related_pickings" type="object" class="oe_stat_button" icon="fa-truck">
+                        <field name="is_picking_count" widget="statinfo" string="Livraisons"/>
+                    </button>
+                </xpath>
                 <field name="partner_id" position="after">
                     <field name="is_societe_comptable"/>
                 </field>
@@ -40,6 +48,12 @@
                     <group string="Plasti-ka">
                         <field name="is_devise_tunisienne_id"/>
                         <field name="is_taux_change_tnd"/>
+                        <field name="is_total_mp" readonly="1"/>
+                        <field name="is_total_amt" readonly="1"/>
+                        <field name="is_total_service" readonly="1"/>
+                        <field name="is_nb_pieces" readonly="1"/>
+                        <field name="is_nb_colis" readonly="1"/>
+                        <field name="is_nb_palettes" readonly="1"/>
                     </group>
                 </page>
             </field>

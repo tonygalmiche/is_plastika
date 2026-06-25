@@ -16,9 +16,9 @@ class stock_picking(models.Model):
         return super(stock_picking, self)._search(args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
 
     def creer_factures_action(self):
-        """Surcharge pour alimenter les champs PU, price_unit et taux de change depuis le tarif commercial (indice=999) après création des factures."""
+        """Surcharge pour alimenter le taux de change après création des factures.
+        Les champs PU et price_unit sont injectés à la création via _prepare_invoice_line()."""
         res = super().creer_factures_action()
         invoices = self.mapped('sale_id.invoice_ids').filtered(lambda m: m.state == 'draft')
-        invoices.mapped('invoice_line_ids')._fill_from_tarif_cial()
         invoices._fill_taux_change()
         return res

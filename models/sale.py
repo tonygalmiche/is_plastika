@@ -45,3 +45,42 @@ class sale_order_line(models.Model):
             args = args.copy()
             args.append(('is_societe_comptable', '=', user.is_societe_comptable))
         return super(sale_order_line, self)._search(args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
+
+    def _prepare_invoice_line(self, **optional_vals):
+        res = super()._prepare_invoice_line(**optional_vals)
+        # _create_invoices_aves_regroupement (is_plastigray16) n'applique pas la position
+        # fiscale : on le fait ici explicitement sur les taxes et le compte.
+        fiscal_pos = self.order_id.fiscal_position_id
+        if fiscal_pos:
+            tax_ids_raw = res.get('tax_ids', [])
+            decoded_ids = []
+            for cmd in tax_ids_raw:
+                cmd = tuple(cmd)
+                if cmd[0] == 6 and len(cmd) >= 3:
+                    decoded_ids += list(cmd[2])
+                elif cmd[0] == 4 and len(cmd) >= 2:
+                    decoded_ids.append(cmd[1])
+            if decoded_ids:
+                taxes = self.env['account.tax'].browse(decoded_ids)
+                res['tax_ids'] = [(6, 0, fiscal_pos.map_tax(taxes).ids)]
+            if res.get('account_id'):
+                account = self.env['account.account'].browse(res['account_id'])
+                res['account_id'] = fiscal_pos.map_account(account).id
+        # Injecter price_unit et les champs PU depuis le tarif commercial (indice=999)
+        partner = self.order_id.partner_invoice_id.commercial_partner_id
+        product_tmpl = self.product_id.product_tmpl_id
+        if partner and product_tmpl:
+            tarif = self.env['is.tarif.cial'].search([
+                ('partner_id', '=', partner.id),
+                ('product_id', '=', product_tmpl.id),
+                ('indice_prix', '=', 999),
+            ], limit=1)
+            if tarif:
+                pu_mp = tarif.part_matiere + tarif.part_composant + tarif.part_emballage
+                pu_amt = tarif.amortissement_moule
+                pu_pf = tarif.prix_vente - pu_mp - pu_amt
+                res['price_unit'] = tarif.prix_vente
+                res['is_pu_mp'] = pu_mp
+                res['is_pu_amt'] = pu_amt
+                res['is_pu_pf'] = pu_pf
+        return res

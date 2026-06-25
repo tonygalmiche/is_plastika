@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+    <template id="is_report_invoice_template">
+        <t t-set="company" t-value="res_company"/>
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="o">
+                <div class="article"  t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')"></div>
+
+                <div class="header is_report_invoice_header">
+                    <table style="width:100%;border:0pt">
+                        <tr>
+                            <td style="width:40%;border:0pt">
+                                <img src='/is_plastigray16/static/src/img/logo-pmn.png' style="height:15mm" alt="Logo"/>
+                                <div class="expediteur" style="text-align:left">
+                                    <h2>PLASTI-KA SA</h2>
+                                    <div>ZONE INDUSTRIELLE</div>
+                                    <div>4060 KALAA KEBIRA</div>
+                                    <div>Tél. : 73 342 374 ; Fax : 73 342 385</div>
+                                    <div>C.D. : 814756 N / N.R. ; MF : 875565/X</div>
+                                </div>
+                            </td>
+                            <td style="width:5%;border:0pt">
+                            </td>
+                            <td style="width:55%;border:0pt">
+                                <div class="titre">
+                                    <t t-if="o.move_type == 'out_invoice'">
+                                        <span t-if="o.partner_id.lang == 'fr_FR'">FACTURE N°</span>
+                                        <span t-if="o.partner_id.lang != 'fr_FR'">INVOICE N°</span>
+                                    </t>
+                                    <t t-if="o.move_type == 'out_refund'">
+                                        <span t-if="o.partner_id.lang == 'fr_FR'">AVOIR N°</span>
+                                        <span t-if="o.partner_id.lang != 'fr_FR'">AVOIR N°</span>
+                                    </t>
+                                    <span t-field="o.name"/>
+                                        <span t-if="o.partner_id.lang == 'fr_FR'"> du </span>
+                                        <span t-if="o.partner_id.lang != 'fr_FR'"> - </span>
+                                        <span t-field="o.invoice_date"/> (S<span t-esc="o.invoice_date.isocalendar()[1]"/>)<br />
+                                </div>
+                                <div>
+                                    <span t-if="o.partner_id.lang == 'fr_FR'">Échéance :</span>
+                                    <span t-if="o.partner_id.lang != 'fr_FR'">Due date :</span>
+                                    <span t-field="o.invoice_date_due"  t-options='{"format": "dd/MM/yyyy"}' />
+                                </div>
+                                <div style="height:5mm"> </div>
+                                <b>
+                                    <div t-if="o.partner_id.lang == 'fr_FR'">Nom du client et adresse de facturation : </div>
+                                    <div t-if="o.partner_id.lang != 'fr_FR'">Customer name and invoicing address : </div>
+                                </b>
+                                <div class="destinataire" style="padding:2mm">
+                                    <b><span t-field="o.partner_id.name"/></b> (<span t-field="o.partner_id.is_code"/>/<span t-field="o.partner_id.is_adr_code"/>)
+                                    <div t-field="o.partner_id"
+                                         t-options='{"widget": "contact", "fields": ["address", "phone", "fax"], "no_marker": true}'/>
+                                    <div t-if="o.partner_id.vat">VAT : <span t-field="o.partner_id.vat"/></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="page is_report_invoice_page">
+                    <div t-if="o.is_document"><b>Document            : </b><span t-field="o.is_document"/></div>
+                    <div t-if="o.is_num_bl_manuel"><b>N° BL manuel   : </b><span t-field="o.is_num_bl_manuel"/></div>
+                    <br />
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr t-if="o.partner_id.lang == 'fr_FR'">
+                                <th style="text-align:left">Référence</th>
+                                <th style="text-align:left">Commande N°</th>
+                                <th style="text-align:left">Désignation article</th>
+                                <th style="text-align:right">Quantité</th>
+                                <th style="text-align:left">Livraison</th>
+                                <th style="text-align:right">P.U.H.T</th>
+                                <th style="text-align:right">Total HT</th>
+                            </tr>
+                            <tr t-if="o.partner_id.lang != 'fr_FR'">
+                                <th style="text-align:left">Reference</th>
+                                <th style="text-align:left">Purchase Order N°</th>
+                                <th style="text-align:left">Article description</th>
+                                <th style="text-align:right">Quantity</th>
+                                <th style="text-align:left">Delivery</th>
+                                <th style="text-align:right">Per unit price</th>
+                                <th style="text-align:right">Total excl. VAT</th>
+                            </tr>
+                        </thead>
+                        <t t-if="o.partner_id.is_configuration_facture!='regrouper_article_commande'">
+                            <tbody class="invoice_tbody">
+                                <t t-set="lines" t-value="o.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
+                                <t t-set="pds_brut_total" t-value="round(sum(l.quantity*l.product_id.weight for l in lines), 2)"/>
+                                <t t-set="pds_net_total"  t-value="round(sum(l.quantity*l.product_id.weight_net for l in lines), 2)"/>
+                                <tr t-foreach="lines" t-as="l">
+                                    <t t-set="pds_brut" t-value="round(l.quantity*l.product_id.weight,2)"/>
+                                    <t t-set="pds_net"  t-value="round(l.quantity*l.product_id.weight_net,2)"/>
+                                    <td><span t-field="l.product_id.is_ref_client"/></td>
+                                    <td>
+                                        <t t-if="l.is_move_id.sale_line_id.is_client_order_ref">
+                                            <span t-field="l.is_move_id.sale_line_id.is_client_order_ref"/><br />
+                                        </t>
+                                        <t t-if="o.is_num_cde_client">
+                                            <span t-field="o.is_num_cde_client"/>
+                                        </t>
+                                    </td>
+                                    <td>
+                                        <span t-field="l.name"/>
+                                        <t t-if="l.product_id.is_nomenclature_douaniere">
+                                            <br />
+                                            <i>Nomenclature douanière : <span t-field="l.product_id.is_nomenclature_douaniere"/></i>
+                                        </t>
+                                        <t t-if="l.is_document">
+                                            <br />
+                                            <i>N° du chantier  : <span t-field="l.is_document"/></i>
+                                        </t>
+                                        <div>Poids : <span t-esc="pds_brut"/> KG (brut) - <span t-esc="pds_net"/> KG (net)</div>
+                                    </td>
+                                    <td class="text-right"><span t-esc="int(l.quantity)"/></td>
+                                    <td>
+                                        <div t-if="l.is_move_id.picking_id">
+                                            <span t-field="l.is_move_id.picking_id.name" /><br/>
+                                            du <span t-field="l.is_move_id.picking_id.date" t-options='{"format": "dd/MM/yyyy"}'/>
+                                        </div>
+                                    </td>
+                                    <td class="text-right"><span style="white-space: nowrap;" t-field="l.price_unit"/></td>
+                                    <td class="text-right">
+                                        <span t-field="l.price_subtotal"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </t>
+                        <t t-if="o.partner_id.is_configuration_facture=='regrouper_article_commande'">
+                            <tbody class="invoice_tbody">
+                                <t t-set="lines" t-value="o.get_lines_facture()"/>
+                                <t t-set="pds_brut_total" t-value="round(sum(l['pds_brut'] for l in lines), 2)"/>
+                                <t t-set="pds_net_total"  t-value="round(sum(l['pds_net'] for l in lines), 2)"/>
+                                <tr t-foreach="lines" t-as="l">
+                                    <t t-set="pds_brut"       t-value="round(l['pds_brut'],2)"/>
+                                    <t t-set="pds_net"        t-value="round(l['pds_net'],2)"/>
+                                    <td><span t-esc="l['is_ref_client']"/></td>
+                                    <td>
+                                        <t t-if="l['is_client_order_ref']">
+                                            <span t-esc="l['is_client_order_ref']"/><br />
+                                        </t>
+                                        <t t-if="o.is_num_cde_client">
+                                            <span t-esc="o.is_num_cde_client"/>
+                                        </t>
+                                    </td>
+                                    <td>
+                                        <span t-esc="l['name']"/>
+                                        <t t-if="l['is_nomenclature_douaniere']">
+                                            <br />
+                                            <i>Nomenclature douanière : <span t-esc="l['is_nomenclature_douaniere']"/></i>
+                                        </t>
+                                        <t t-if="l['is_document']">
+                                            <br />
+                                            <i>N° du chantier  : <span t-esc="l['is_document']"/></i>
+                                        </t>
+                                        <div>Poids : <span t-esc="pds_brut"/> KG (brut) - <span t-esc="pds_net"/> KG (net)</div>
+                                    </td>
+                                    <td class="text-right"><span t-esc="l['quantity']"/></td>
+                                    <td>
+                                        <t t-if="l['picking_name']">
+                                            <span t-esc="l['picking_name']" /><br/>
+                                            du <span t-esc="l['picking_date']" />
+                                        </t>
+                                    </td>
+                                    <td class="text-right"><span style="white-space: nowrap;" t-esc="l['price_unit']"/></td>
+                                    <td class="text-right">
+                                        <span t-esc="l['price_subtotal']"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </t>
+                    </table>
+                    <style>
+                        .is_totaux td { padding: 1px 4px !important; }
+                    </style>
+                    <div class="row">
+                        <div class="col-4">
+                            <table class="table table-condensed is_totaux" style="margin-bottom:0">
+                                <tr t-if="o.is_nb_pieces">
+                                    <td><strong>Nombre de pièces : </strong></td>
+                                    <td class="text-right">
+                                        <span t-field="o.is_nb_pieces"/>
+                                    </td>
+                                </tr>
+                                <tr t-if="o.is_nb_colis">
+                                    <td><strong>Nombre de colis : </strong></td>
+                                    <td class="text-right">
+                                        <span t-field="o.is_nb_colis"/>
+                                    </td>
+                                </tr>
+                                <tr t-if="o.is_nb_palettes">
+                                    <td><strong>Nombre de palettes : </strong></td>
+                                    <td class="text-right">
+                                        <span t-field="o.is_nb_palettes"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td t-if="o.partner_id.lang == 'fr_FR'"><strong>Poids brut total : </strong></td>
+                                    <td t-if="o.partner_id.lang != 'fr_FR'"><strong>Total gross weight : </strong></td>
+                                    <td class="text-right">
+                                        <span t-esc="pds_brut_total"/> KG
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td t-if="o.partner_id.lang == 'fr_FR'"><strong>Poids net total : </strong></td>
+                                    <td t-if="o.partner_id.lang != 'fr_FR'"><strong>Total net weight : </strong></td>
+                                    <td class="text-right">
+                                        <span t-esc="pds_net_total"/> KG
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-4">
+                        </div>
+                        <div class="col-4">
+                            <table class="table table-condensed is_totaux" style="width:100%;margin-bottom:0">
+                                <tr t-if="o.is_total_mp">
+                                    <td><strong>Total matière première</strong></td>
+                                    <td class="text-right">
+                                        <span t-field="o.is_total_mp"/>
+                                    </td>
+                                </tr>
+                                <tr t-if="o.is_total_amt">
+                                    <td><strong>Total amortissement outillage</strong></td>
+                                    <td class="text-right">
+                                        <span t-field="o.is_total_amt"/>
+                                    </td>
+                                </tr>
+                                <tr t-if="o.is_total_mp or o.is_total_amt">
+                                    <td><strong>Total service</strong></td>
+                                    <td class="text-right">
+                                        <span t-field="o.is_total_service"/>
+                                    </td>
+                                </tr>
+                                <t t-if="o.amount_tax == 0">
+                                    <tr>
+                                        <td><span>TVA : EXON</span></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="border-black">
+                                        <td t-if="o.partner_id.lang == 'fr_FR'"><strong>Total facturé</strong></td>
+                                        <td t-if="o.partner_id.lang != 'fr_FR'"><strong>Total excl. VAT</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="o.amount_untaxed"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="o.amount_tax != 0">
+                                    <tr class="border-black">
+                                        <td t-if="o.partner_id.lang == 'fr_FR'"><strong>Total H.T.</strong></td>
+                                        <td t-if="o.partner_id.lang != 'fr_FR'"><strong>Total excl. VAT</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="o.amount_untaxed"/>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="o.is_escompte">
+                                        <td>Escompte</td>
+                                        <td class="text-right">
+                                            <span t-field="o.is_escompte"/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="tax_totals" t-value="o.tax_totals"/>
+                                    <t t-foreach="tax_totals['subtotals']" t-as="subtotal">
+                                        <t t-set="subtotal_to_show" t-value="subtotal['name']"/>
+                                        <t t-foreach="tax_totals['groups_by_subtotal'][subtotal_to_show]" t-as="amount_by_group">
+                                            <tr>
+                                                <td t-if="o.partner_id.lang == 'fr_FR'"><span>T.V.A. 20%</span></td>
+                                                <td t-if="o.partner_id.lang != 'fr_FR'"><span>VAT 20%</span></td>
+                                                <td class="text-end o_price_total">
+                                                    <span class="text-nowrap" t-esc="amount_by_group['formatted_tax_group_amount']"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <tr class="border-black">
+                                        <td t-if="o.partner_id.lang == 'fr_FR'"><strong>Total T.T.C.</strong></td>
+                                        <td t-if="o.partner_id.lang != 'fr_FR'"><strong>Total incl. VAT</strong></td>
+                                        <td class="text-right">
+                                             <span t-field="o.amount_total"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-set="incoterm" t-value="o.invoice_incoterm_id or o.partner_id.is_incoterm"/>
+                                <tr t-if="incoterm">
+                                    <td colspan="2"><strong>Incoterm : </strong><span t-esc="incoterm.name"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <p t-if="o.narration">
+                        <strong>Commentaires:</strong>
+                        <span t-field="o.narration"/>
+                    </p>
+
+
+                    
+                </div>
+                <div class="footer is_report_invoice_footer">
+                    <div class="text-center" style="border-top: 1px solid black">
+                        <table style="width:100%">
+                            <tr>
+                                <td class="text-left" style="width:80%;font-size:10pt;">
+                                    PLASTI-KA SA - Zone industrielle - 4060 KALAA KEBIRA - C.D : 814756 N/N.R - MF : 875565/X
+                                </td>
+                                <td class="text-right">
+                                    Page <span class="page" style="font-size:7pt;"/> / <span class="topage"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <p style="page-break-before:always;"> </p>
+            </t>
+        </t>
+    </template>
+    <record id="is_plastika_invoice_paperformat" model="report.paperformat">
+        <field name="name">Facture Client Plasti-ka</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">55</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">50</field>
+        <field name="dpi">90</field>
+    </record>
+    <record id="account.account_invoices" model="ir.actions.report">
+        <field name="name">Facture</field>
+        <field name="model">account.move</field>
+        <field name="binding_model_id" ref=""/>
+        <field name="paperformat_id" ref="is_plastika_invoice_paperformat"/>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">is_plastika.is_report_invoice_template</field>
+        <field name="report_file">is_plastika.is_report_invoice_template</field>
+        <field name="attachment">(object.state in ('posted')) and ('Facture-Plasti-ka-'+(object.name or '').replace('/','').replace(' ','')+'.pdf')</field>
+    </record>
+</data>
+</odoo>

@@ -219,7 +219,7 @@
                                         <span t-field="o.is_total_mp"/>
                                     </td>
                                 </tr>
-                                <tr t-if="o.is_total_amt">
+                                <tr>
                                     <td><strong>Total amortissement outillage</strong></td>
                                     <td class="text-right">
                                         <span t-field="o.is_total_amt"/>

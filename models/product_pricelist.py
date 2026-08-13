@@ -33,16 +33,10 @@ class product_pricelist_item(models.Model):
         compute='_compute_is_societe_comptable', store=True, index=True,
     )
 
-    @api.depends(
-        'pricelist_id.is_societe_comptable',
-        'price_version_id.pricelist_id.is_societe_comptable',
-    )
+    @api.depends('price_version_id.pricelist_id.is_societe_comptable')
     def _compute_is_societe_comptable(self):
         for item in self:
-            item.is_societe_comptable = (
-                item.pricelist_id.is_societe_comptable
-                or item.price_version_id.pricelist_id.is_societe_comptable
-            )
+            item.is_societe_comptable = item.price_version_id.pricelist_id.is_societe_comptable
 
     @api.model
     def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):

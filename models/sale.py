@@ -19,6 +19,14 @@ class sale_order(models.Model):
         return super(sale_order, self)._search(args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
 
 
+    def action_recalculer_tva_article(self):
+        """Remet la TVA des lignes de commande depuis la fiche article (product.taxes_id),
+        en tenant compte de la position fiscale de la commande.
+        Utile quand la TVA a été modifiée sur l'article après la création de la commande :
+        la commande garde alors l'ancienne TVA tant qu'on ne la recalcule pas."""
+        self.order_line._compute_tax_id()
+
+
     def get_pic_3mois(self, ok=False, **kwargs):
         # Filtre le résultat du PIC 3 mois par société comptable de l'utilisateur.
         # Le super() construit le dict via SQL sans tenir compte de is_societe_comptable ;

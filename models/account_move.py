@@ -60,6 +60,25 @@ class account_move(models.Model):
             move.is_nb_colis = nb_colis
             move.is_nb_palettes = nb_palettes
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        "Facture fournisseur d'un partenaire Plasti-ka sans devise : devise des commandes de ses lignes (TND), et non celle de la société"
+        for vals in vals_list:
+            if vals.get('move_type') not in ('in_invoice', 'in_refund') or vals.get('currency_id') or not vals.get('partner_id'):
+                continue
+            if self.env['res.partner'].browse(vals['partner_id']).is_societe_comptable != 'plasti_ka':
+                continue
+            ligne_ids = [
+                commande[2]['purchase_line_id'] for commande in vals.get('invoice_line_ids', [])
+                if isinstance(commande, (list, tuple)) and len(commande) > 2
+                and isinstance(commande[2], dict) and commande[2].get('purchase_line_id')
+            ]
+            devise = self.env['purchase.order.line'].browse(ligne_ids).mapped('order_id.currency_id')[:1]
+            if devise:
+                vals['currency_id'] = devise.id
+        return super().create(vals_list)
+
+
     def imprimer_simple_double(self):
         action = super().imprimer_simple_double()
         if action and action.get('url'):

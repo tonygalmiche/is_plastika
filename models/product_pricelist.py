@@ -309,7 +309,8 @@ class product_pricelist_item(models.Model):
     @api.model
     def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
         user = self.env.user
-        if user.is_societe_comptable:
+        # Contexte is_sans_filtre_societe_comptable : prix TND lu à la validation d'une commande Gray par un utilisateur Plastigray
+        if user.is_societe_comptable and not self.env.context.get('is_sans_filtre_societe_comptable'):
             args = args.copy()
             args += ['|', ('is_societe_comptable', '=', False), ('is_societe_comptable', '=', user.is_societe_comptable)]
         return super(product_pricelist_item, self)._search(args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)

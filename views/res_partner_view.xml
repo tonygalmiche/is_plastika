@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Onglet Ventes et achats, après la liste de prix d'achat : fournisseur de Gray (s'il existe), fournisseur de PK et bouton de création -->
+        <record id="is_plastika_view_partner_property_form" model="ir.ui.view">
+            <field name="name">is_plastika_view_partner_property_form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="is_plastigray16.is_product_view_partner_property_form" />
+            <field name="arch" type="xml">
+                <field name="pricelist_purchase_id" position="after">
+                    <field name="is_societe_comptable" invisible="1"/>
+                    <field name="is_fournisseur_gray_id" attrs="{'invisible': [('is_fournisseur_gray_id', '=', False)]}"/>
+                    <field name="is_fournisseur_pk_id" attrs="{'invisible': ['|', '|', ('supplier', '=', False), ('is_company', '=', False), ('is_societe_comptable', '!=', 'plastigray')]}"/>
+                    <button
+                        name="creer_fournisseur_pk_action" type="object"
+                        string="Créer le fournisseur de PK" class="btn-outline-primary" colspan="2"
+                        confirm="Créer le fournisseur de PK par copie de ce fournisseur (nom sans « PLASTI-KA chez », code suffixé par PK, société comptable Plasti-ka) ?"
+                        attrs="{'invisible': ['|', '|', '|', ('is_fournisseur_pk_id', '!=', False), ('supplier', '=', False), ('is_company', '=', False), ('is_societe_comptable', '!=', 'plastigray')]}"
+                    />
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -7,6 +7,7 @@ from . import is_cout
 from . import is_taux_change
 from . import res_company
 from . import is_facture_pk
+from . import res_partner
 from . import mrp
 from . import is_fiche_tampographie
 from . import is_certifications_qualite_suivi

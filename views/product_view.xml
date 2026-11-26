@@ -84,5 +84,17 @@
             </field>
         </record>
 
+        <!-- Article comptable PK dans l'onglet Comptabilité, après la section analytique de dépenses -->
+        <record model="ir.ui.view" id="is_plastika_account_product_template_form_view">
+            <field name="name">is_plastika_account_product_template_form_view</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="is_plastigray16.account_product_template_form_view"/>
+            <field name="arch" type="xml">
+                <field name="is_section_analytique_ha_id" position="after">
+                    <field name="is_article_comptable_pk_id"/>
+                </field>
+            </field>
+        </record>
+
     </data>
 </odoo>

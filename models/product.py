@@ -27,6 +27,11 @@ class product_template(models.Model):
     _inherit = 'product.template'
 
     is_societe_comptable = fields.Selection(related='is_category_id.is_societe_comptable', store=True, tracking=True, index=True)
+    is_article_comptable_pk_id = fields.Many2one(
+        'product.product', 'Article comptable PK', tracking=True,
+        domain=[('is_societe_comptable', '=', 'plasti_ka'), ('is_section_analytique_ha_id.name', '=', 'GROUPE')],
+        help="Article utilisé sur la commande au fournisseur de PK générée depuis la commande de Gray (son compte de charges est celui de PK)",
+    )
 
     @api.model
     def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
@@ -35,7 +40,7 @@ class product_template(models.Model):
         if user.is_societe_comptable:
             args = args.copy()
             args.append(('is_societe_comptable', '=', user.is_societe_comptable))
-        
+
         return super(product_template, self)._search(args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
 
 

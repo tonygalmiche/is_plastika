@@ -91,7 +91,8 @@
             <field name="inherit_id" ref="is_plastigray16.account_product_template_form_view"/>
             <field name="arch" type="xml">
                 <field name="is_section_analytique_ha_id" position="after">
-                    <field name="is_article_comptable_pk_id"/>
+                    <field name="is_categorie_unite_id" invisible="1"/>
+                    <field name="is_article_comptable_pk_id" domain="[('is_societe_comptable', '=', 'plasti_ka'), ('is_section_analytique_ha_id.name', '=', 'GROUPE'), ('uom_id.category_id', '=', is_categorie_unite_id)]"/>
                 </field>
             </field>
         </record>

@@ -18,7 +18,22 @@
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
                     <field name="is_societe_comptable"/>
+                    <field name="is_reception_gray_id" attrs="{'invisible': [('is_reception_gray_id', '=', False)]}"/>
+                    <field name="is_reception_pk_id"   attrs="{'invisible': [('is_reception_pk_id', '=', False)]}"/>
                 </field>
+                <!-- Réception PK reliée : validée ou annulée uniquement par la réception Gray -->
+                <xpath expr="//header" position="inside">
+                    <field name="is_reception_pk_liee" invisible="1"/>
+                </xpath>
+                <button name="action_annuler_reception" position="attributes">
+                    <attribute name="attrs">{'invisible': ['|', '|', ('purchase_id', '=', False), ('state', '!=', 'done'), ('is_reception_gray_id', '!=', False)]}</attribute>
+                </button>
+                <xpath expr="//header/button[@name='%(is_plastigray16.stock_transfer_details_action)d']" position="attributes">
+                    <attribute name="attrs">{'invisible': ['|', '|', ('state', 'not in', ['assigned','confirmed','waiting']), ('picking_type_id','!=',1), ('is_reception_pk_liee', '=', True)]}</attribute>
+                </xpath>
+                <button name="action_cancel" position="attributes">
+                    <attribute name="attrs">{'invisible': ['|', ('state', 'not in', ('assigned', 'confirmed', 'draft', 'waiting')), ('is_reception_pk_liee', '=', True)]}</attribute>
+                </button>
             </field>
         </record>
         <record id="view_picking_internal_search_inherit" model="ir.ui.view">

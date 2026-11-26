@@ -24,7 +24,7 @@ class purchase_order(models.Model):
     @api.model
     def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
         user = self.env.user
-        if user.is_societe_comptable:
+        if user.is_societe_comptable and not self.env.context.get('is_sans_filtre_societe_comptable'):
             args = args.copy()
             args.append(('is_societe_comptable', '=', user.is_societe_comptable))
         return super()._search(args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
@@ -34,6 +34,24 @@ class purchase_order(models.Model):
         res = super().button_approve(force=force)
         for obj in self:
             obj._creer_commande_pk()
+        return res
+
+
+    def button_cancel(self):
+        "Commande PK reliée : annulable uniquement par la commande Gray ; commande Gray annulée : commande PK annulée"
+        if not self.env.context.get(CONTEXTE_MAJ_COMMANDE_PK):
+            for obj in self:
+                if obj.is_commande_gray_id:
+                    raise ValidationError(
+                        "La commande %s est reliée à la commande Gray %s : annulez la commande Gray"
+                        % (obj.name, obj.is_commande_gray_id.name)
+                    )
+        res = super().button_cancel()
+        commandes_pk = self.mapped('is_commande_pk_id').filtered(lambda c: c.state != 'cancel')
+        if commandes_pk:
+            commandes_pk.with_context(**{CONTEXTE_MAJ_COMMANDE_PK: True, 'is_sans_filtre_societe_comptable': True}).button_cancel()
+            for obj in self.filtered('is_commande_pk_id'):
+                obj.message_post(body="Commande PK %s annulée" % obj.is_commande_pk_id.name)
         return res
 
 
@@ -78,7 +96,7 @@ class purchase_order(models.Model):
                 qty     = line.product_qty,
                 date    = line.date_planned.date(),
             )
-            ligne_pk = self.env['purchase.order.line'].create({
+            ligne_pk = self.env['purchase.order.line'].with_context(**{CONTEXTE_MAJ_COMMANDE_PK: True}).create({
                 'order_id'        : commande_pk.id,
                 'product_id'      : line.product_id.is_article_comptable_pk_id.id,
                 'name'            : line.name,
@@ -110,14 +128,15 @@ class purchase_order_line(models.Model):
     @api.model
     def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
         user = self.env.user
-        if user.is_societe_comptable:
+        if user.is_societe_comptable and not self.env.context.get('is_sans_filtre_societe_comptable'):
             args = args.copy()
             args.append(('is_societe_comptable', '=', user.is_societe_comptable))
         return super()._search(args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
 
 
     def _test_commande_gray_verrouillee(self, orders):
-        "Commande Gray validée et reliée à une commande PK : plus de modification (annuler et recommencer)"
+        """Commande Gray validée et reliée à une commande PK : plus de modification (annuler et recommencer).
+        Commande PK reliée à une commande Gray : jamais modifiable (elle suit la commande Gray)"""
         if self.env.context.get(CONTEXTE_MAJ_COMMANDE_PK):
             return
         for order in orders:
@@ -125,6 +144,11 @@ class purchase_order_line(models.Model):
                 raise ValidationError(
                     "La commande %s est reliée à la commande PK %s : elle n'est plus modifiable après validation "
                     "(annulez-la puis recommencez)" % (order.name, order.is_commande_pk_id.name)
+                )
+            if order.is_commande_gray_id:
+                raise ValidationError(
+                    "La commande %s est reliée à la commande Gray %s : elle n'est pas modifiable"
+                    % (order.name, order.is_commande_gray_id.name)
                 )
 
 

@@ -7,6 +7,11 @@
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="is_plastigray16.is_purchase_order_form" />
             <field name="arch" type="xml">
+                <!-- Commande PK reliée : annulée uniquement par l'annulation de la commande Gray -->
+                <button name="button_cancel" position="attributes">
+                    <attribute name="states"></attribute>
+                    <attribute name="attrs">{'invisible': ['|', ('state', 'not in', ('draft', 'to approve', 'sent', 'purchase')), ('is_commande_gray_id', '!=', False)]}</attribute>
+                </button>
                 <field name="is_modified" position="after">
                     <field name="is_commande_pk_id"   attrs="{'invisible': [('is_commande_pk_id', '=', False)]}"/>
                     <field name="is_commande_gray_id" attrs="{'invisible': [('is_commande_gray_id', '=', False)]}"/>

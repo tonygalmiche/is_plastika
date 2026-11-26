@@ -21,6 +21,7 @@ Module Odoo 16 pour Plasti-ka
         "views/is_ligne_reception.xml",
         "views/is_cout_view.xml",
         "views/is_taux_change_view.xml",
+        "views/res_company_view.xml",
         "views/mrp_view.xml",
         "views/is_fiche_tampographie_view.xml",
         "views/is_certifications_qualite_suivi_view.xml",

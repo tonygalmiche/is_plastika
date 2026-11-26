@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="is_plastika_view_company_form" model="ir.ui.view">
+            <field name="name">is_plastika_view_company_form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="is_plastigray16.is_view_company_form" />
+            <field name="arch" type="xml">
+                <field name="is_taux_devise_dinar" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </field>
+                <field name="is_taux_commission" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </field>
+                <field name="is_taux_commission" position="after">
+                    <field name="is_taux_facturation_pk_ids" nolabel="1" colspan="2">
+                        <tree editable="bottom">
+                            <field name="date_debut"/>
+                            <field name="taux_devise_dinar"/>
+                            <field name="taux_commission"/>
+                        </tree>
+                    </field>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

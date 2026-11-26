@@ -8,6 +8,8 @@
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
                     <field name="is_societe_comptable"/>
+                    <field name="is_date_declaration" optional="hide"/>
+                    <field name="is_taux_change_tnd"  optional="hide"/>
                 </field>
             </field>
         </record>
@@ -19,6 +21,7 @@
                 <field name="partner_id" position="after">
                     <field name="is_societe_comptable"/>
                     <field name="is_devise_tunisienne_id" optional="show"/>
+                    <field name="is_date_declaration" optional="show"/>
                     <field name="is_taux_change_tnd" optional="show"/>
                     <field name="is_total_mp" optional="show"/>
                     <field name="is_total_amt" optional="show"/>
@@ -41,6 +44,11 @@
                     <field name="is_facture_refacturation_id" attrs="{'invisible': [('is_facture_refacturation_id', '=', False)]}"/>
                     <field name="is_factures_refacturees_ids" widget="many2many_tags" attrs="{'invisible': [('is_factures_refacturees_ids', '=', [])]}"/>
                 </field>
+                <field name="invoice_date" position="after">
+                    <field name="is_date_declaration_vsb" invisible="1"/>
+                    <field name="is_date_declaration" attrs="{'invisible': [('is_date_declaration_vsb', '=', False)]}"/>
+                    <field name="is_taux_change_tnd"  attrs="{'invisible': [('is_date_declaration_vsb', '=', False)]}" readonly="1" force_save="1"/>
+                </field>
                 <xpath expr="//field[@name='invoice_line_ids']//field[@name='price_unit']" position="after">
                     <field name="is_pu_mp"  optional="show" readonly="1" force_save="1"/>
                     <field name="is_pu_amt" optional="show" readonly="1" force_save="1"/>
@@ -50,7 +58,6 @@
                 <page name="other_info" position="inside">
                     <group string="Plasti-ka">
                         <field name="is_devise_tunisienne_id"/>
-                        <field name="is_taux_change_tnd"/>
                         <field name="is_total_mp" readonly="1"/>
                         <field name="is_total_amt" readonly="1"/>
                         <field name="is_total_service" readonly="1"/>

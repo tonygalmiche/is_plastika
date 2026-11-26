@@ -11,6 +11,16 @@ class account_move(models.Model):
     is_societe_comptable = fields.Selection(related='partner_id.is_societe_comptable', store=True, index=True)
     is_devise_tunisienne_id = fields.Many2one('res.currency', 'Devise Tunisienne', default=lambda self: self.env['res.currency'].search([('name', '=', 'TND')], limit=1).id)
     is_taux_change_tnd = fields.Float('Taux de change', digits=(12, 4))
+    is_date_declaration = fields.Date('Date de déclaration douanière', copy=False, tracking=True,
+        help="Factures PK en devise : taux de change (is.taux.change) pris à cette date au lieu de la date de facture")
+    is_date_declaration_vsb = fields.Boolean('Date de déclaration douanière visible', compute='_compute_is_date_declaration_vsb',
+        help="Facture Plasti-ka dans une autre devise que le TND")
+
+
+    @api.depends('is_societe_comptable', 'currency_id', 'is_devise_tunisienne_id')
+    def _compute_is_date_declaration_vsb(self):
+        for obj in self:
+            obj.is_date_declaration_vsb = obj.is_societe_comptable == 'plasti_ka' and obj.currency_id != obj.is_devise_tunisienne_id
 
     #** Refacturation à Gray des factures fournisseur PK ***********************
     is_facture_refacturation_id = fields.Many2one('account.move', 'Refacturée à Gray par', copy=False, readonly=True, index=True,
@@ -184,18 +194,29 @@ class account_move(models.Model):
         return action
 
     def _fill_taux_change(self):
-        """Remplit is_taux_change_tnd depuis is.taux.change pour la date et la devise tunisienne de chaque facture."""
+        """Taux de change de la devise de la facture en TND (is.taux.change) à la date de déclaration douanière, sinon à la date
+        de facture : dernier taux connu à cette date ou avant (week-end, jour férié) ; 0 si facture en TND ou sans taux"""
         for move in self:
-            if move.invoice_date and move.is_devise_tunisienne_id:
-                taux = self.env['is.taux.change'].search([
-                    ('date', '=', move.invoice_date),
+            date = move.is_date_declaration or move.invoice_date
+            taux = self.env['is.taux.change']
+            if date and move.is_devise_tunisienne_id and move.currency_id != move.is_devise_tunisienne_id:
+                taux = taux.search([
+                    ('date', '<=', date),
+                    ('devise1_id', '=', move.currency_id.id),
                     ('devise2_id', '=', move.is_devise_tunisienne_id.id),
-                ], limit=1)
-                move.is_taux_change_tnd = taux.taux if taux else 0.0
+                ], order='date desc', limit=1)
+            move.is_taux_change_tnd = taux.taux if taux else 0.0
 
-    @api.onchange('invoice_date')
+    @api.onchange('invoice_date', 'is_date_declaration', 'currency_id')
     def _onchange_invoice_date_taux_change(self):
         self._fill_taux_change()
+
+    def write(self, vals):
+        "Taux de change recalculé quand la date de facture, la date de déclaration douanière ou la devise change (aussi après validation)"
+        res = super().write(vals)
+        if {'invoice_date', 'is_date_declaration', 'currency_id'} & set(vals):
+            self.filtered(lambda m: m.is_societe_comptable == 'plasti_ka')._fill_taux_change()
+        return res
 
     is_picking_count = fields.Integer('Nombre de livraisons', compute='_compute_is_picking_count')
 

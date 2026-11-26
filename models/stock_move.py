@@ -63,9 +63,16 @@ class stock_move(models.Model):
         moves_todo = pickings_pk.move_ids.filtered(lambda m: m.state not in ('done', 'cancel'))
         if moves_todo:
             moves_todo._action_done(cancel_backorder=cancel_backorder)
+            #** Comme l'assistant « Transfert » : mouvements à facturer, date de réception et BL (« Création facture » fournisseur)
+            moves_todo.filtered(lambda m: m.state == 'done').write({'invoice_state': '2binvoiced'})
             reception_gray = self.mapped('picking_id')[:1]
             for picking in pickings_pk:
-                picking.write({'date_done': fields.Datetime.now(), 'is_reception_gray_id': reception_gray.id})
+                picking.write({
+                    'date_done'           : fields.Datetime.now(),
+                    'is_reception_gray_id': reception_gray.id,
+                    'is_date_reception'   : reception_gray.is_date_reception or fields.Date.context_today(self),
+                    'is_num_bl'           : reception_gray.is_num_bl,
+                })
                 picking.message_post(body="Réception validée par la réception Gray %s" % ', '.join(self.mapped('picking_id.name')))
 
 

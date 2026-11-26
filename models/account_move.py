@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from math import ceil
+from markupsafe import Markup
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 
 
 class account_move(models.Model):
@@ -9,6 +11,95 @@ class account_move(models.Model):
     is_societe_comptable = fields.Selection(related='partner_id.is_societe_comptable', store=True, index=True)
     is_devise_tunisienne_id = fields.Many2one('res.currency', 'Devise Tunisienne', default=lambda self: self.env['res.currency'].search([('name', '=', 'TND')], limit=1).id)
     is_taux_change_tnd = fields.Float('Taux de change', digits=(12, 4))
+
+    #** Refacturation à Gray des factures fournisseur PK ***********************
+    is_facture_refacturation_id = fields.Many2one('account.move', 'Refacturée à Gray par', copy=False, readonly=True, index=True,
+        help="Facture client à Gray qui refacture cette facture fournisseur PK")
+    is_factures_refacturees_ids = fields.One2many('account.move', 'is_facture_refacturation_id', 'Factures fournisseur PK refacturées', readonly=True)
+    is_a_refacturer = fields.Boolean('À refacturer à Gray', compute='_compute_is_a_refacturer', store=True, index=True,
+        help="Facture fournisseur PK validée, avec des réceptions reliées à des commandes Gray, pas encore refacturée à Gray (ou refacturation annulée)")
+
+
+    def _get_lignes_a_refacturer(self):
+        "Lignes de la facture fournisseur PK dont la réception est reliée à une commande Gray"
+        return self.invoice_line_ids.filtered(
+            lambda l: l.display_type == 'product' and l.is_move_id.purchase_line_id.is_ligne_gray_id
+        )
+
+
+    @api.depends('move_type', 'state', 'is_societe_comptable', 'invoice_line_ids.is_move_id',
+                 'is_facture_refacturation_id', 'is_facture_refacturation_id.state')
+    def _compute_is_a_refacturer(self):
+        for obj in self:
+            obj.is_a_refacturer = bool(
+                obj.move_type == 'in_invoice' and obj.state == 'posted' and obj.is_societe_comptable == 'plasti_ka'
+                and (not obj.is_facture_refacturation_id or obj.is_facture_refacturation_id.state == 'cancel')
+                and obj._get_lignes_a_refacturer()
+            )
+
+
+    def refacturer_gray_action(self):
+        """Factures fournisseur PK sélectionnées : une facture client à Gray (brouillon, en EUR) par fournisseur,
+        une ligne de commentaire par facture fournisseur, une ligne par réception (article comptable PK,
+        code Gray et réception Gray dans le libellé, unité et prix de la ligne de commande Gray)"""
+        client = self.env.company.is_client_gray_pk_id
+        if not client:
+            raise ValidationError("Le client Gray de PK n'est pas renseigné (fiche société)")
+        factures = self.filtered('is_a_refacturer')
+        if not factures:
+            raise ValidationError("Aucune facture fournisseur PK à refacturer à Gray dans la sélection")
+        factures_gray = self.env['account.move']
+        position_fiscale = self.env['account.fiscal.position']._get_fiscal_position(client)
+        for fournisseur in factures.mapped('partner_id'):
+            factures_fournisseur = factures.filtered(lambda f: f.partner_id == fournisseur).sorted(lambda f: (f.invoice_date, f.id))
+            lignes = []
+            for facture in factures_fournisseur:
+                lignes.append((0, 0, {
+                    'display_type': 'line_note',
+                    'name'        : "REFACTURATION %s %s" % (fournisseur.name, facture.supplier_invoice_number or facture.name),
+                }))
+                for ligne in facture._get_lignes_a_refacturer():
+                    article_pk = ligne.product_id
+                    if not article_pk.property_account_income_id:
+                        raise ValidationError(
+                            "L'article comptable PK %s n'a pas de compte de produits (fiche article, onglet Comptabilité)" % article_pk.is_code
+                        )
+                    ligne_gray     = ligne.is_move_id.purchase_line_id.is_ligne_gray_id
+                    article_gray   = ligne_gray.product_id
+                    reception_gray = ligne.is_move_id.picking_id.is_reception_gray_id
+                    lignes.append((0, 0, {
+                        'product_id'                     : article_pk.id,
+                        'name'                           : "%s %s - %s" % (article_gray.is_code, article_gray.name, reception_gray.name or ''),
+                        'quantity'                       : ligne.product_uom_id._compute_quantity(ligne.quantity, ligne_gray.product_uom, round=False),
+                        'product_uom_id'                 : ligne_gray.product_uom.id,
+                        'price_unit'                     : ligne_gray.price_unit,
+                        'tax_ids'                        : [(6, 0, position_fiscale.map_tax(article_pk.taxes_id).ids)],
+                        'is_section_analytique_id'       : article_pk.is_section_analytique_id.id,
+                        'is_ligne_facture_fournisseur_id': ligne.id,
+                    }))
+            facture_gray = self.env['account.move'].create({
+                'move_type'     : 'out_invoice',
+                'partner_id'    : client.id,
+                'fiscal_position_id': position_fiscale.id,
+                'currency_id'   : self.env.company.currency_id.id,
+                'invoice_date'  : fields.Date.context_today(self),
+                'invoice_origin': ', '.join(f.supplier_invoice_number or f.name for f in factures_fournisseur),
+                'invoice_line_ids': lignes,
+            })
+            facture_gray._fill_taux_change()
+            factures_fournisseur.write({'is_facture_refacturation_id': facture_gray.id})
+            for facture in factures_fournisseur:
+                facture.message_post(body=Markup("Facture refacturée à Gray : %s") % facture_gray._get_html_link(title="facture client"))
+            factures_gray |= facture_gray
+        return {
+            'name'     : 'Refacturation à Gray',
+            'type'     : 'ir.actions.act_window',
+            'res_model': 'account.move',
+            'view_mode': 'tree,form',
+            'views'    : [(self.env.ref('account.view_out_invoice_tree').id, 'tree'), (self.env.ref('account.view_move_form').id, 'form')],
+            'domain'   : [('id', 'in', factures_gray.ids)],
+            'context'  : {'default_move_type': 'out_invoice'},
+        }
 
     is_total_mp = fields.Monetary(
         'Total matière première',

@@ -23,6 +23,9 @@ class res_company(models.Model):
 
     is_taux_facturation_pk_ids = fields.One2many('is.taux.facturation.pk', 'company_id', 'Taux devise dinar et commission')
     is_maj_listes_gray_vsb     = fields.Boolean('Mise à jour des listes de prix Gray possible', compute='_compute_is_maj_listes_gray_vsb')
+    is_client_gray_pk_id       = fields.Many2one('res.partner', 'Client Gray de PK',
+        domain=[('is_societe_comptable', '=', 'plasti_ka'), ('is_company', '=', True)],
+        help="Client (société comptable Plasti-ka) des factures de refacturation à Gray des factures fournisseur PK")
 
 
     def _compute_is_maj_listes_gray_vsb(self):

@@ -38,11 +38,14 @@
                 </xpath>
                 <field name="partner_id" position="after">
                     <field name="is_societe_comptable"/>
+                    <field name="is_facture_refacturation_id" attrs="{'invisible': [('is_facture_refacturation_id', '=', False)]}"/>
+                    <field name="is_factures_refacturees_ids" widget="many2many_tags" attrs="{'invisible': [('is_factures_refacturees_ids', '=', [])]}"/>
                 </field>
                 <xpath expr="//field[@name='invoice_line_ids']//field[@name='price_unit']" position="after">
                     <field name="is_pu_mp"  optional="show" readonly="1" force_save="1"/>
                     <field name="is_pu_amt" optional="show" readonly="1" force_save="1"/>
                     <field name="is_pu_pf"  optional="show" readonly="1" force_save="1"/>
+                    <field name="is_ligne_facture_fournisseur_id" optional="hide" force_save="1"/>
                 </xpath>
                 <page name="other_info" position="inside">
                     <group string="Plasti-ka">
@@ -57,6 +60,35 @@
                     </group>
                 </page>
             </field>
+        </record>
+        <!-- Refacturation à Gray des factures fournisseur PK -->
+        <record id="is_factures_a_refacturer_gray_tree" model="ir.ui.view">
+            <field name="name">is_factures_a_refacturer_gray_tree</field>
+            <field name="model">account.move</field>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <tree create="false">
+                    <header>
+                        <button name="refacturer_gray_action" type="object" string="Refacturer à Gray" class="btn-primary"/>
+                    </header>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="supplier_invoice_number"/>
+                    <field name="invoice_date"/>
+                    <field name="currency_id"/>
+                    <field name="amount_untaxed" string="Montant HT"/>
+                    <field name="amount_total"   string="Total"/>
+                    <field name="state" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_factures_a_refacturer_gray_action" model="ir.actions.act_window">
+            <field name="name">Factures à refacturer à Gray</field>
+            <field name="res_model">account.move</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="is_factures_a_refacturer_gray_tree"/>
+            <field name="domain">[('is_a_refacturer', '=', True)]</field>
+            <field name="context">{'default_move_type': 'in_invoice'}</field>
         </record>
         <record id="view_account_invoice_filter_inherit" model="ir.ui.view">
             <field name="name">view_account_invoice_filter_inherit</field>

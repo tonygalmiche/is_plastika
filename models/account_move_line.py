@@ -5,6 +5,9 @@ from odoo import models, fields, api
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
+    # Refacturation à Gray : ligne de la facture fournisseur PK refacturée (article et réception Gray par la commande PK)
+    is_ligne_facture_fournisseur_id = fields.Many2one('account.move.line', 'Ligne facture fournisseur PK', copy=False, readonly=True, index=True)
+
     # PU.MP : Part unitaire de matière première = Part Matière + Part composant + Part emballage
     is_pu_mp = fields.Float(
         'PU.MP',

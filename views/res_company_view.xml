@@ -20,6 +20,13 @@
                             <field name="taux_commission"/>
                         </tree>
                     </field>
+                    <field name="is_maj_listes_gray_vsb" invisible="1"/>
+                    <button
+                        attrs="{'invisible': [('is_maj_listes_gray_vsb', '=', False)]}"
+                        name="maj_listes_prix_gray_action" type="object"
+                        string="Mise à jour des listes de prix Gray" class="btn-outline-primary" colspan="2"
+                        confirm="Recréer les versions en cours et futures de toutes les listes de prix Gray depuis les listes TND des fournisseurs de PK ?"
+                    />
                 </field>
             </field>
         </record>

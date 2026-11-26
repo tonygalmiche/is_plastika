@@ -6,8 +6,31 @@
             <field name="model">product.pricelist</field>
             <field name="inherit_id" ref="is_plastigray16.is_product_pricelist_view"/>
             <field name="arch" type="xml">
+                <xpath expr="//sheet" position="before">
+                    <header>
+                        <field name="is_maj_liste_gray_vsb" invisible="1"/>
+                        <field name="is_creer_liste_tnd_vsb" invisible="1"/>
+                        <button
+                            name="maj_liste_prix_gray_action" type="object"
+                            string="Mise à jour liste de prix Gray" class="btn-primary"
+                            confirm="Recréer les versions en cours et futures de la liste de prix Gray (€ avec commission) depuis cette liste TND ?"
+                            attrs="{'invisible': [('is_maj_liste_gray_vsb', '=', False)]}"
+                        />
+                        <button
+                            name="creer_liste_prix_tnd_action" type="object"
+                            string="Créer la liste de prix TND de PK" class="btn-primary"
+                            confirm="Créer la liste de prix TND du fournisseur de PK à partir des versions en cours et futures de cette liste (prix € × taux devise dinar / taux de commission) ?"
+                            attrs="{'invisible': [('is_creer_liste_tnd_vsb', '=', False)]}"
+                        />
+                    </header>
+                </xpath>
                 <field name="partner_id" position="after">
                     <field name="is_societe_comptable"/>
+                    <field name="is_pricelist_tnd_id" attrs="{'invisible': [('is_pricelist_tnd_id', '=', False)]}"/>
+                    <field name="is_pricelist_gray_id" attrs="{'invisible': [('is_pricelist_gray_id', '=', False)]}"/>
+                </field>
+                <field name="version_id" position="attributes">
+                    <attribute name="attrs">{'readonly': [('is_pricelist_tnd_id', '!=', False)]}</attribute>
                 </field>
             </field>
         </record>

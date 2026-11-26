@@ -21,3 +21,17 @@ class res_company(models.Model):
     _inherit = 'res.company'
 
     is_taux_facturation_pk_ids = fields.One2many('is.taux.facturation.pk', 'company_id', 'Taux devise dinar et commission')
+
+
+    def get_taux_facturation_pk(self, date=False):
+        """Taux devise dinar et taux de commission valides à la date indiquée (aujourd'hui par défaut) :
+        ligne du tableau avec la date de début la plus récente avant ou à cette date, sinon les 2 champs de la société"""
+        self.ensure_one()
+        date = date or fields.Date.context_today(self)
+        ligne = self.env['is.taux.facturation.pk'].search([
+            ('company_id', '=', self.id),
+            ('date_debut', '<=', date),
+        ], order='date_debut desc', limit=1)
+        if ligne:
+            return ligne.taux_devise_dinar, ligne.taux_commission
+        return self.is_taux_devise_dinar, self.is_taux_commission

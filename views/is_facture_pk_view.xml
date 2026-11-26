@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Taux en lecture seule mais enregistrés quand ils sont changés par la date de facture -->
+        <record id="is_plastika_facture_pk_form_view" model="ir.ui.view">
+            <field name="name">is_plastika_facture_pk_form_view</field>
+            <field name="model">is.facture.pk</field>
+            <field name="inherit_id" ref="is_plastigray16.is_facture_pk_form_view" />
+            <field name="arch" type="xml">
+                <field name="taux_devise_dinar" position="attributes">
+                    <attribute name="force_save">1</attribute>
+                </field>
+                <field name="taux_commission" position="attributes">
+                    <attribute name="force_save">1</attribute>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>
